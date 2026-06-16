@@ -99,7 +99,8 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
-        if kk_rct.colliderect(bb_rct):#こうかとんrectと爆弾rectが重なったら
+        if kk_rct.colliderect(bb_rct): 
+            #こうかとんrectと爆弾rectが重なったら
             gameover(screen)
             return
         screen.blit(bg_img, [0, 0]) 
