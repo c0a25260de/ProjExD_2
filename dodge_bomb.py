@@ -31,30 +31,46 @@ def check_bound(rct:pg.Rect):
     return yoko,tate
 
 def gameover(screen:pg.Surface)->None:
+    #黒い矩形を描画する
     black=pg.Surface((WIDTH,HEIGHT))
     black.fill((0,0,0))
     black.set_alpha(255)
-    
+    #白文字でGame Overを書く
     fonto=pg.font.Font(None,50)
     text=fonto.render("GAME OVER",True,(255,255,255))
     text_rect=text.get_rect(center=(WIDTH//2,HEIGHT//2))
-
+    #こうかとんの画像左右二枚を置く
     cry_img=pg.transform.rotozoom(pg.image.load("fig/8.png"),0,1.0)
     cryleft_rct=cry_img.get_rect()
     cryleft_rct.center=(WIDTH//2-150,HEIGHT//2)
-
     cryright_rct=cry_img.get_rect()
     cryright_rct.center=(WIDTH//2+150,HEIGHT//2)
-
-    
-
-    
+    #surfaceに貼ってる
     black.blit(cry_img,cryleft_rct)
     black.blit(cry_img,cryright_rct)
     black.blit(text,text_rect)
     screen.blit(black,(0,0))
+    #五秒間表示させるを実装する
     pg.display.update()
     time.sleep(5)
+    
+def get_kk_imgs()->dict[tuple[int,int],pg.Surface]:
+    img_left=pg.transform.rotozoom("fig/3.png",0,1.0)
+    img_right=pg.transform.flip("fig/3.png",0,1.0)
+    kk_dict={(0,0):img_left,
+             (+5,0):img_right,
+             (+5,-5):pg.transform.rotozoom(img_right,45,1),
+             (0,-5):pg.transform.rotozoom(img_right,90,1),
+             (-5,-5):pg.transform.rotozoom(img_left,-45,1),
+             (-5,0):pg.transform.rotozoom(img_left),
+             (-5,+5):pg.transform.rotozoom(img_left,45,1),
+             (0,+5):pg.transform.rotozoom(img_right,-90,1),
+             (+5.+5):pg.transform.rotozoom(img_right,-45,1),
+
+             }
+    return kk_dict
+    
+
     
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -71,6 +87,7 @@ def main():
     bb_rct.centery=random.randint(0,HEIGHT)
     vx,vy=+5,+5
     bb_img.set_colorkey((0,0,0))
+    kk_img=get_kk_imgs()
 
     
    
