@@ -55,17 +55,17 @@ def gameover(screen:pg.Surface)->None:
     time.sleep(5)
     
 def get_kk_imgs()->dict[tuple[int,int],pg.Surface]:
-    img_left=pg.transform.rotozoom("fig/3.png",0,1.0)
-    img_right=pg.transform.flip("fig/3.png",0,1.0)
+    img_left=pg.transform.rotozoom(pg.image.load("fig/3.png"),0,1.0)
+    img_right=pg.transform.flip(pg.image.load("fig/3.png"),True,False)
     kk_dict={(0,0):img_left,
              (+5,0):img_right,
              (+5,-5):pg.transform.rotozoom(img_right,45,1),
              (0,-5):pg.transform.rotozoom(img_right,90,1),
              (-5,-5):pg.transform.rotozoom(img_left,-45,1),
-             (-5,0):pg.transform.rotozoom(img_left),
+             (-5,0):img_left,
              (-5,+5):pg.transform.rotozoom(img_left,45,1),
              (0,+5):pg.transform.rotozoom(img_right,-90,1),
-             (+5.+5):pg.transform.rotozoom(img_right,-45,1),
+             (+5,+5):pg.transform.rotozoom(img_right,-45,1),
 
              }
     return kk_dict
@@ -121,7 +121,7 @@ def main():
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) !=(True,True):
             kk_rct.move(-sum_mv[0],-sum_mv[1])#動きをなかったことにする
-        screen.blit(kk_img, kk_rct)
+        screen.blit(kk_img[tuple(sum_mv)], kk_rct)
 
         bb_rct.move_ip(vx,vy)
         yoko,tate=check_bound(bb_rct)
