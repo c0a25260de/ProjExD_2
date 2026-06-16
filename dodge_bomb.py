@@ -1,5 +1,6 @@
 import os
 import sys
+import random
 import pygame as pg
 
 
@@ -21,8 +22,15 @@ def main():
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
     
-    bb_img=pg.surface((20,20))
-    pg.draw.circle(bb_img,(255,0,0))
+    bb_img=pg.Surface((20,20))
+    pg.draw.circle(bb_img,(255,0,0),(10,10),10)
+    bb_img.set_colorkey((0,0,0))
+
+    bb_rct=bb_img.get_rect()
+    vx,vy=5,5
+    bb_rct.centerx=random.randint(0,WIDTH)
+    bb_rct.centery=random.randint(0,HEIGHT)
+    
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -44,10 +52,10 @@ def main():
             if key_lst[key]:
                 sum_mv[1]+=mv[1]
                 sum_mv[0]+=mv[0]
-                
-
+        bb_rct.move_ip(vx,vy)
         kk_rct.move_ip(sum_mv)
         screen.blit(kk_img, kk_rct)
+        screen.blit(bb_img,bb_rct)
         pg.display.update()
         tmr += 1
         clock.tick(50)
