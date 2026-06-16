@@ -2,6 +2,7 @@ import os
 import sys
 import random
 import pygame as pg
+import time
 
 
 WIDTH, HEIGHT = 1100, 650
@@ -12,6 +13,8 @@ DELTA={
     pg.K_RIGHT:(+5,0)
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+
 
 def check_bound(rct:pg.Rect):
     """
@@ -26,6 +29,32 @@ def check_bound(rct:pg.Rect):
     if rct.top<0 or HEIGHT<rct.bottom:
         tate=False
     return yoko,tate
+
+def gameover(screen:pg.Surface)->None:
+    black=pg.Surface((WIDTH,HEIGHT))
+    black.fill((0,0,0))
+    black.set_alpha(255)
+    
+    fonto=pg.font.Font(None,50)
+    text=fonto.render("GAME OVER",True,(255,255,255))
+    text_rect=text.get_rect(center=(WIDTH//2,HEIGHT//2))
+
+    cry_img=pg.transform.rotozoom(pg.image.load("fig/8.png"),0,1.0)
+    cryleft_rct=cry_img.get_rect()
+    cryleft_rct.center=(WIDTH//2-150,HEIGHT//2)
+
+    cryright_rct=cry_img.get_rect()
+    cryright_rct.center=(WIDTH//2+150,HEIGHT//2)
+
+    
+
+    
+    black.blit(cry_img,cryleft_rct)
+    black.blit(cry_img,cryright_rct)
+    black.blit(text,text_rect)
+    screen.blit(black,(0,0))
+    pg.display.update()
+    time.sleep(5)
     
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -54,7 +83,7 @@ def main():
             if event.type == pg.QUIT: 
                 return
         if kk_rct.colliderect(bb_rct):#こうかとんrectと爆弾rectが重なったら
-            print("GAME OVER")
+            gameover(screen)
             return
         screen.blit(bg_img, [0, 0]) 
 
