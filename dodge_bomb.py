@@ -13,7 +13,20 @@ DELTA={
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def check_bound(rct:pg.Rect):
+    """
+    引数：こうかとんRect or 爆弾Rect
+    戻り値：横方向・縦方向の真理値タプル
+    True：画面内/False：画面外
+    """
+    yoko,tate=True,True
 
+    if rct.left<0 or WIDTH<rct.right:
+        yoko=False
+    if rct.top<0 or HEIGHT<rct.bottom:
+        tate=False
+    return yoko,tate
+    
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -24,12 +37,15 @@ def main():
     
     bb_img=pg.Surface((20,20))
     pg.draw.circle(bb_img,(255,0,0),(10,10),10)
-    bb_img.set_colorkey((0,0,0))
-
     bb_rct=bb_img.get_rect()
-    vx,vy=5,5
     bb_rct.centerx=random.randint(0,WIDTH)
     bb_rct.centery=random.randint(0,HEIGHT)
+    vx,vy=+5,+5
+    bb_img.set_colorkey((0,0,0))
+
+    
+   
+    
     
     clock = pg.time.Clock()
     tmr = 0
@@ -38,6 +54,7 @@ def main():
             if event.type == pg.QUIT: 
                 return
         screen.blit(bg_img, [0, 0]) 
+
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
         #if key_lst[pg.K_UP]:
@@ -48,13 +65,21 @@ def main():
          #sum_mv[0] -= 5
         #if key_lst[pg.K_RIGHT]:
          #sum_mv[0] += 5
-        for key,mv in DELTA.items():
+        for key, mv in DELTA.items():
             if key_lst[key]:
-                sum_mv[1]+=mv[1]
                 sum_mv[0]+=mv[0]
-        bb_rct.move_ip(vx,vy)
+                sum_mv[1]+=mv[1]
         kk_rct.move_ip(sum_mv)
+        if check_bound(kk_rct) !=(True,True):
+            kk_rct.move(-sum_mv[0],-sum_mv[1])#動きをなかったことにする
         screen.blit(kk_img, kk_rct)
+
+        bb_rct.move_ip(vx,vy)
+        yoko,tate=check_bound(bb_rct)
+        if not yoko:
+            vx*=-1
+        if not tate:
+            vy*=-1
         screen.blit(bb_img,bb_rct)
         pg.display.update()
         tmr += 1
